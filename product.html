@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Details - RiiMart</title>
+  <link rel="stylesheet" href="cart.css" />
+  <style>
+    .header {
+      background-color: #004e89;
+      padding: 20px;
+      color: white;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      border-bottom: 2px solid #fcd581;
+    }
+
+    .product-detail {
+      max-width: 1000px;
+      margin: 3rem auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      padding: 1rem;
+    }
+
+    .product-detail img {
+      max-width: 400px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .product-info {
+      flex: 1;
+    }
+
+    .product-info h2 {
+      color: #0f172a;
+      margin-bottom: 1rem;
+    }
+
+    .product-info p {
+      color: #334155;
+      margin-bottom: 1rem;
+    }
+
+    .product-info .price {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #004e89;
+      margin-bottom: 1rem;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .quantity-selector input {
+      width: 60px;
+      padding: 0.4rem;
+      margin-left: 10px;
+      font-size: 1rem;
+      text-align: center;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .btn-primary {
+      background-color: #004e89;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background-color: #003c6f;
+      color: #fcd581;
+    }
+
+    .footer {
+      background-color: #004e89;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #0f172a;
+      color: #fbbf24;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <h1 class="logo">RiiMart</h1>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="cart.html" class="nav-link">Cart 🛒</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="product-detail">
+    <img src="https://i.imgur.com/qkdpN.jpg" alt="Product Image" />
+    <div class="product-info">
+      <h2>Classic Men T-Shirt</h2>
+      <p class="price">₹499</p>
+      <p>Experience ultimate comfort and timeless style with our Classic Men T-Shirt, made from premium breathable cotton.</p>
+      
+      <div class="quantity-selector">
+        <label for="qty">Quantity:</label>
+        <input type="number" id="qty" value="1" min="1" />
+      </div>
+      <button class="btn-primary" onclick="addToCart()">Add to Cart</button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 RiiMart. All rights reserved.</p>
+  </footer>
+
+  <div class="toast" id="toast">Added to cart!</div>
+
+  <script>
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+
+    function addToCart() {
+      const id = "tshirt-men";
+      const name = "Classic Men T-Shirt";
+      const price = 499;
+      const image = "https://i.imgur.com/qkdpN.jpg";
+      const quantity = parseInt(document.getElementById("qty").value) || 1;
+
+      const cart = JSON.parse(localStorage.getItem("riimart_cart")) || [];
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        existing.quantity += quantity;
+      } else {
+        cart.push({ id, name, price, quantity, image });
+      }
+
+      localStorage.setItem("riimart_cart", JSON.stringify(cart));
+      showToast(`${name} added to cart!`);
+    }
+  </script>
+</body>
+</html>

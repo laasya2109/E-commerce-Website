@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Confirmation - RiiMart</title>
+  <link rel="stylesheet" href="cart.css" />
+  <style>
+    .header {
+      background-color: #004e89;
+      padding: 20px;
+      color: white;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-link.active,
+    .nav-link:hover {
+      border-bottom: 2px solid #fcd581;
+    }
+
+    .confirmation-container {
+      max-width: 800px;
+      margin: 3rem auto;
+      text-align: center;
+      background: #ffffff;
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .confirmation-container h2 {
+      color: #0f172a;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+
+    .confirmation-container p {
+      font-size: 1.1rem;
+      color: #334155;
+      margin-bottom: 2rem;
+    }
+
+    .btn-primary {
+      background-color: #004e89;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background-color: #003c6f;
+      color: #fcd581;
+    }
+
+    .footer {
+      background-color: #004e89;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <h1 class="logo">RiiMart</h1>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="cart.html" class="nav-link">Cart 🛒</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="confirmation-container">
+      <h2>Thank you for your purchase!</h2>
+      <p>Your order has been successfully placed.<br>You’ll receive a confirmation email shortly.</p>
+      <a href="index.html" class="btn-primary">Continue Shopping</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 RiiMart. All rights reserved.</p>
+  </footer>
+</body>
+</html>

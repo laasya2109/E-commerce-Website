@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout - RiiMart</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .checkout-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .checkout-container h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .checkout-grid {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .form-section, .summary-section {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.3rem;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .summary-box {
+      background: #f1f5f9;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .summary-box h3 {
+      margin-bottom: 1rem;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .place-order-btn {
+      margin-top: 1.5rem;
+      width: 100%;
+      background-color: #0f172a;
+      color: #fbbf24;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .place-order-btn:hover {
+      background-color: #f59e0b;
+      color: #0f172a;
+    }
+
+    #message {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+    /* Nav styles from your earlier styles */
+    .header {
+      background-color: #004e89;
+      padding: 20px;
+      color: white;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      border-bottom: 2px solid #fcd581;
+    }
+
+    .footer {
+      background-color: #004e89;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">RiiMart</div>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="cart.html" class="nav-link">Cart 🛒</a>
+        <a href="checkout.html" class="nav-link active">Checkout</a>
+        <a href="transaction.html" class="nav-link">Transactions</a>
+        <a href="login.html" class="nav-link">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="checkout-container">
+    <h2>Checkout</h2>
+    <div class="checkout-grid">
+      <div class="form-section">
+        <h3>Shipping Details</h3>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="fullName" required />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" required />
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" id="address" required />
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" id="city" required />
+        </div>
+        <div class="form-group">
+          <label>ZIP Code</label>
+          <input type="text" id="zip" required />
+        </div>
+        <div class="form-group">
+          <label>Payment Method</label>
+          <select id="paymentMethod" required>
+            <option value="cod">Cash on Delivery</option>
+            <option value="card">Credit / Debit Card</option>
+            <option value="upi">UPI / Net Banking</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="summary-section">
+        <div class="summary-box">
+          <h3>Order Summary</h3>
+          <div id="summary-items"></div>
+          <hr />
+          <div class="summary-item">
+            <strong>Total:</strong>
+            <span id="summary-total">₹0</span>
+          </div>
+          <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
+          <p id="message"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 RiiMart. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Check if logged in (token stored on login)
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("⚠️ Please login first to place an order.");
+      window.location.href = "login.html";
+    }
+
+    // Load cart and display summary
+    const cart = JSON.parse(localStorage.getItem("riimart_cart")) || [];
+    const summaryItemsElem = document.getElementById("summary-items");
+    const summaryTotalElem = document.getElementById("summary-total");
+    const messageElem = document.getElementById("message");
+
+    function renderCartSummary() {
+      if (cart.length === 0) {
+        summaryItemsElem.innerHTML = "<p>Your cart is empty.</p>";
+        summaryTotalElem.textContent = "₹0";
+        return;
+      }
+      summaryItemsElem.innerHTML = "";
+      let total = 0;
+      cart.forEach(item => {
+        const div = document.createElement("div");
+        div.classList.add("summary-item");
+        div.innerHTML = `<span>${item.name} (x${item.quantity})</span> <span>₹${(item.price * item.quantity).toFixed(2)}</span>`;
+        summaryItemsElem.appendChild(div);
+        total += item.price * item.quantity;
+      });
+      summaryTotalElem.textContent = "₹" + total.toFixed(2);
+    }
+
+    renderCartSummary();
+
+    async function placeOrder() {
+      // Clear message
+      messageElem.textContent = "";
+
+      // Validate form fields
+      const fullName = document.getElementById("fullName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const zip = document.getElementById("zip").value.trim();
+      const paymentMethod = document.getElementById("paymentMethod").value;
+
+      if (!fullName || !email || !address || !city || !zip || !paymentMethod) {
+        messageElem.textContent = "Please fill all required fields.";
+        messageElem.style.color = "red";
+        return;
+      }
+
+      if (cart.length === 0) {
+        messageElem.textContent = "Your cart is empty.";
+        messageElem.style.color = "red";
+        return;
+      }
+
+      // Build order object
+      const order = {
+        customer: {
+          fullName,
+          email,
+          address,
+          city,
+          zip,
+        },
+        paymentMethod,
+        items: cart.map(item => ({
+          productId: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price
+        })),
+        total: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      };
+
+      try {
+        const res = await fetch("http://localhost:5000/api/orders", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(order)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          messageElem.textContent = "✅ Order placed successfully!";
+          messageElem.style.color = "green";
+
+          // Clear cart
+          localStorage.removeItem("riimart_cart");
+
+          // Redirect after short delay
+          setTimeout(() => {
+            window.location.href = "transaction.html";
+          }, 2000);
+        } else {
+          messageElem.textContent = "❌ " + (data.message || "Order failed.");
+          messageElem.style.color = "red";
+        }
+      } catch (err) {
+        messageElem.textContent = "❌ Server error. Please try again later.";
+        messageElem.style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>

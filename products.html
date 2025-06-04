@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RiiMart | Products</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f6;
+      color: #1c3b5a;
+    }
+
+    .header {
+      background-color: #003c6f;
+      padding: 20px;
+      color: white;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      border-bottom: 2px solid #fcd581;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 15px;
+      background-color: #fcd581;
+      flex-wrap: wrap;
+    }
+
+    .filters input,
+    .filters select {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid white;
+      font-size: 15px;
+    }
+
+    .product-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+      padding: 40px;
+    }
+
+    .product-card {
+      background-color: white;
+      padding: 20px;
+      border: 1px solid white;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .product-card:hover {
+      transform: scale(1.03);
+      border-color: #004e89;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: contain;
+      background-color: white;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .product-card h3 {
+      margin: 10px 0 5px;
+    }
+
+    .product-card p {
+      font-size: 16px;
+      font-weight: bold;
+      color: #004e89;
+    }
+
+    .product-card button {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #004e89;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .product-card button:hover {
+      background-color: #003c6f;
+      color: #fcd581;
+    }
+
+    .footer {
+      background-color: #004e89;
+      text-align: center;
+      padding: 20px;
+      color: white;
+      margin-top: 40px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #0f172a;
+      color: #fbbf24;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #loadMoreBtn {
+      padding: 12px 24px;
+      font-size: 16px;
+      margin: 20px auto 40px;
+      display: block;
+      background-color: #004e89;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #loadMoreBtn:hover {
+      background-color: #003c6f;
+      color: #fcd581;
+    }
+
+    @media screen and (max-width: 600px) {
+      .filters {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">RiiMart</div>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link active">Products</a>
+        <a href="cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart</a>
+        <a href="login.html" class="nav-link"><i class="fas fa-user"></i> Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="filters">
+    <input type="text" id="searchInput" placeholder="Search products..." />
+    <select id="categoryFilter">
+      <option value="all">All Categories</option>
+      <option value="men">Men</option>
+      <option value="women">Women</option>
+      <option value="electronics">Electronics</option>
+    </select>
+    <select id="priceFilter">
+      <option value="all">All Prices</option>
+      <option value="0-500">Below ₹500</option>
+      <option value="501-1000">₹500 - ₹1000</option>
+      <option value="1001-99999">Above ₹1000</option>
+    </select>
+  </section>
+
+  <main class="product-container" id="productContainer"></main>
+
+  <button id="loadMoreBtn">Load More</button>
+
+  <footer class="footer">
+    <p>&copy; 2025 RiiMart. All rights reserved.</p>
+  </footer>
+
+  <div class="toast" id="toast">Added to cart!</div>
+
+  <script>
+  const allProducts = [
+    { id: 'tshirt-men', name: 'Classic Men T-Shirt', price: 399, category: 'men', image: 'https://i00.eu/img/233/1024x1024/cv9piu2f/8961.jpg' },
+    { id: 'dress-women', name: 'Elegant Women Dress', price: 899, category: 'women', image: 'https://st2.depositphotos.com/3647147/11215/i/950/depositphotos_112159300-stock-photo-young-beautiful-female-model-in.jpg' },
+    { id: 'headphones', name: 'Bluetooth Headphones', price: 1599, category: 'electronics', image: 'https://x.imastudent.com/content/0043661_bose-700-noise-canceling-bluetooth-headphones_500.jpeg' },
+    { id: 'shirt-men', name: 'Casual Men Shirt', price: 499, category: 'men', image: 'https://imagescdn.thecollective.in/img/app/product/1/1016325-13837655.jpg?w=500&auto=format' },
+    { id: 'bag-women', name: 'Stylish Women Bag', price: 699, category: 'women', image: 'https://images-static.nykaa.com/media/catalog/product/7/4/7493e42PL24C518_1.jpg?tr=w-500' },
+    { id: 'stand', name: 'Smartphone Stand', price: 199, category: 'electronics', image: 'https://5.imimg.com/data5/SELLER/Default/2021/12/HC/DV/QA/137867332/7iqlrebq2mrghsvztmns1bdwtoflu6len9eeiox1-550x550h-500x500.jpeg' },
+    { id: 'sneakers-men', name: 'Men Sneakers', price: 1149, category: 'men', image: 'https://hummel.net.in/cdn/shop/files/4410026-9124_1.jpg?v=1747503193' },
+    { id: 'heels-women', name: 'Women Heels', price: 1399, category: 'women', image: 'https://img.freepik.com/premium-photo/red-high-heel-women-shoes-isolated-white-background-3d-rendering-illustration_97167-276.jpg' },
+    { id: 'charger', name: 'Wireless Charger', price: 499, category: 'electronics', image: 'https://m.media-amazon.com/images/I/614+4XNwpML.jpg' },
+    { id: 'watch-men', name: 'Men Digital Watch', price: 799, category: 'men', image: 'https://skmei.in/cdn/shop/files/2024Color1_10bf914d-90d7-45ef-9be3-3d04c70420fa.jpg?v=1748608112&width=1946' },
+    { id: 'watch-women', name: 'Ladies Smart Watch', price: 1099, category: 'women', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkKbpZfJ87s9-ZJ2u7UGUpFq8OOorC6kZk4A&s' },
+    { id: 'earbuds', name: 'Noise Earbuds', price: 1299, category: 'electronics', image: 'https://www.jiomart.com/images/product/original/494351982/noise-buds-vs404-truly-wireless-bluetooth-earbuds-jet-black-digital-o494351982-p607186070-0-202401051109.jpeg?im=Resize=(420,420)' }
+  ];
+
+  const container = document.getElementById("productContainer");
+  const toast = document.getElementById("toast");
+  const loadMoreBtn = document.getElementById("loadMoreBtn");
+  const categoryFilter = document.getElementById("categoryFilter");
+  const priceFilter = document.getElementById("priceFilter");
+  const searchInput = document.getElementById("searchInput");
+
+  function renderProducts(products) {
+    container.innerHTML = "";
+    products.forEach(product => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <img src="${product.image}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>₹${product.price}</p>
+        <button onclick="addToCart('${product.id}', '${product.name}', ${product.price}, '${product.image}')">Add to Cart</button>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function applyFilters() {
+    const selectedCategory = categoryFilter.value;
+    const selectedPrice = priceFilter.value;
+    const searchTerm = searchInput.value.toLowerCase();
+
+    let filtered = allProducts.filter(product => {
+      const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
+      const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+      let matchesPrice = true;
+
+      if (selectedPrice === "0-500") {
+        matchesPrice = product.price <= 500;
+      } else if (selectedPrice === "501-1000") {
+        matchesPrice = product.price >= 501 && product.price <= 1000;
+      } else if (selectedPrice === "1001-99999") {
+        matchesPrice = product.price >= 1001;
+      }
+
+      return matchesCategory && matchesPrice && matchesSearch;
+    });
+
+    renderProducts(filtered);
+    loadMoreBtn.style.display = "none";
+  }
+
+  function addToCart(id, name, price, image) {
+    const cart = JSON.parse(localStorage.getItem("riimart_cart")) || [];
+    const existing = cart.find(p => p.id === id);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({ id, name, price, quantity: 1, image });
+    }
+    localStorage.setItem("riimart_cart", JSON.stringify(cart));
+    toast.textContent = `${name} added to cart!`;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3000);
+  }
+
+  // Initial load
+  window.addEventListener("DOMContentLoaded", () => {
+    renderProducts(allProducts.slice(0, 6));
+    loadMoreBtn.style.display = allProducts.length > 6 ? "block" : "none";
+  });
+
+  // Load more functionality
+  let displayedCount = 6;
+  const batchSize = 6;
+  loadMoreBtn.addEventListener("click", () => {
+    const nextBatch = allProducts.slice(displayedCount, displayedCount + batchSize);
+    renderProducts(allProducts.slice(0, displayedCount + batchSize));
+    displayedCount += batchSize;
+    if (displayedCount >= allProducts.length) {
+      loadMoreBtn.style.display = "none";
+    }
+  });
+
+  // Event listeners for filters
+  categoryFilter.addEventListener("change", applyFilters);
+  priceFilter.addEventListener("change", applyFilters);
+  searchInput.addEventListener("input", applyFilters);
+</script>
+</body>
+</html>
